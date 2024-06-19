@@ -5,12 +5,16 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Component;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.lang.String;
 
+@Component
 public class xssfObj {
 
     //public final thingRepo rep;
@@ -20,14 +24,20 @@ public class xssfObj {
 
     private List<String> columnHeads;
 
+    private ArrayList<Employee> data;
 
-    public xssfObj(String bookName, List<String>sheets, List<String>columnHeads){
+    public xssfObj(){}
+
+
+    public xssfObj(String bookName, List<String>sheets, List<String>columnHeads, ArrayList<Employee>dt){
         //this.rep = thingRepo;
         this.bookName = bookName;
         this.sheets = sheets;
         this.columnHeads = columnHeads;
+        this.data = dt;
         createSheets();
         createFile();
+
     }
 
     XSSFWorkbook wkbk = new XSSFWorkbook();
@@ -36,7 +46,7 @@ public class xssfObj {
     public void createSheets(){
         for(var item: sheets){
             XSSFSheet spsht = wkbk.createSheet(item);
-            XSSFRow rw = spsht.createRow(0);
+            XSSFRow HeaderRw = spsht.createRow(0);
 
 //            XSSFRow rw = spsht.createRow(columnHeads.size());
 
@@ -48,9 +58,30 @@ public class xssfObj {
             Iterator<String> colNum = columnHeads.iterator();
 
             columnHeads.forEach((c)->{
-                Cell cl = rw.createCell(columnHeads.indexOf(c));
+                Cell cl = HeaderRw.createCell(columnHeads.indexOf(c));
                 cl.setCellValue(c.toString());
             });
+
+            data.forEach((d)->{
+                XSSFRow dataRw = spsht.createRow((data.indexOf(d)+1));
+                Cell EmployeeStaffNo = dataRw.createCell(0);
+                EmployeeStaffNo.setCellValue(d.getStaffNumber());
+                Cell EmployeeName = dataRw.createCell(1);
+                EmployeeName.setCellValue(d.getName());
+                Cell EmployeeMobile = dataRw.createCell(2);
+                EmployeeMobile.setCellValue(d.getMobile());
+                Cell EmployeeEmail = dataRw.createCell(3);
+                EmployeeEmail.setCellValue(d.getEmail());
+                Cell EmployeeIDNO = dataRw.createCell(4);
+                EmployeeIDNO.setCellValue(d.getIdNo());
+                Cell EmployeeGender = dataRw.createCell(5);
+                EmployeeGender.setCellValue(d.getGender());
+                Cell Salary = dataRw.createCell(6);
+                Salary.setCellValue(d.getSalary());
+
+            });
+
+
 
         }
     }
